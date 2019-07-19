@@ -1,16 +1,36 @@
 package com.example.tdd;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Properties;
 
 public class MathFactory {
 	
-	static HashMap<String, String> classNames = new HashMap<String, String>();
+	private static HashMap<String, String> classNames;
 	
 	static {
-		classNames.put("+", "com.example.tdd.Addition");
-		classNames.put("-", "com.example.tdd.Subtraction");
-		classNames.put("*", "com.example.tdd.Multiplication");
-		classNames.put("/", "com.example.tdd.Division");
+		classNames = new HashMap<String, String>();
+		FileInputStream file = null;
+		try {
+		 file = new FileInputStream("src/main/resources/config.properties");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		Properties properties = new Properties(); 
+		
+		try {
+			properties.load(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		properties.forEach((key,value) -> {
+			classNames.put((String)key,(String) value);
+		});
+	
 	}	
 	
 	public static IMathOperation getObject(String token) {
